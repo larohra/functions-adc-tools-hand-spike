@@ -1,0 +1,23 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "environmentName": { "value": "${AZURE_ENV_NAME}" },
+    "location": { "value": "${AZURE_LOCATION=westus2}" },
+    "sandboxSubscriptionId": { "value": "${ACA_SANDBOX_SUBSCRIPTION_ID}" },
+    "sandboxResourceGroupName": { "value": "${ACA_SANDBOX_RESOURCE_GROUP}" },
+    "sandboxGroupName": { "value": "${ACA_SANDBOX_GROUP}" },
+    "sandboxRegion": { "value": "${ACA_SANDBOX_REGION=westus2}" },
+    "sandboxDiskName": { "value": "${ACA_SANDBOX_DISK=stock-analysis-python}" },
+    "sandboxBaseImage": { "value": "${ACA_SANDBOX_BASE_IMAGE=mcr.microsoft.com/devcontainers/python:1-3.13-bookworm}" },
+    "apimAiGatewayEndpoint": { "value": "${APIM_AI_GATEWAY_ENDPOINT}" },
+    "apimAiModel": { "value": "${APIM_AI_MODEL}" },
+    "apimAiApiVersion": { "value": "${APIM_AI_API_VERSION=2025-04-01-preview}" },
+    "apimAiTokenScope": { "value": "${APIM_AI_TOKEN_SCOPE=https://cognitiveservices.azure.com/.default}" },
+    "apimSubscriptionKey": { "value": "${APIM_SUBSCRIPTION_KEY=}" },
+    "toEmail": { "value": "${TO_EMAIL}" },
+    "stockAnalysisSchedule": { "value": "${STOCK_ANALYSIS_SCHEDULE=0 30 13 * * 1-5}" },
+    "defaultStockSymbols": { "value": "${DEFAULT_STOCK_SYMBOLS=MSFT,NVDA,AAPL}" },
+    "defaultAnalysisObjective": { "value": "${DEFAULT_ANALYSIS_OBJECTIVE=Produce an evidence-based comparative investment research report.}" }
+  }
+}

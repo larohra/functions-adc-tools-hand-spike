@@ -1,0 +1,31 @@
+{
+  "IsEncrypted": false,
+  "Values": {
+    "FUNCTIONS_WORKER_RUNTIME": "python",
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "AZURE_CLIENT_ID": "",
+    "APIM_AI_GATEWAY_ENDPOINT": "https://<apim-name>.azure-api.net/<model-api-path>",
+    "APIM_AI_MODEL": "gpt-5.6-luna",
+    "APIM_AI_API_VERSION": "2025-04-01-preview",
+    "APIM_AI_TOKEN_SCOPE": "https://cognitiveservices.azure.com/.default",
+    "APIM_SUBSCRIPTION_KEY": "",
+    "ACA_SANDBOX_SUBSCRIPTION_ID": "<subscription-id>",
+    "ACA_SANDBOX_RESOURCE_GROUP": "<sandbox-resource-group>",
+    "ACA_SANDBOX_GROUP": "<sanctioned-sandbox-group>",
+    "ACA_SANDBOX_REGION": "westus2",
+    "ACA_SANDBOX_DISK": "stock-analysis-python",
+    "ACA_SANDBOX_CPU": "2000m",
+    "ACA_SANDBOX_MEMORY": "4096Mi",
+    "ACA_SANDBOX_TIMEOUT_SECONDS": "600",
+    "ACA_SANDBOX_EGRESS_HOSTS": "pypi.org,files.pythonhosted.org,query1.finance.yahoo.com,query2.finance.yahoo.com,fc.yahoo.com,data.sec.gov,www.sec.gov,login.microsoftonline.com,*.apihub.azure.com",
+    "O365_MCP_SERVER_URL": "",
+    "O365_MCP_SCOPE": "https://apihub.azure.com/.default",
+    "TO_EMAIL": "<recipient@example.com>",
+    "SEC_USER_AGENT": "stock-analysis-agent contact@example.com",
+    "STOCK_ANALYSIS_SCHEDULE": "0 30 13 * * 1-5",
+    "DEFAULT_STOCK_SYMBOLS": "MSFT,NVDA,AAPL",
+    "DEFAULT_ANALYSIS_OBJECTIVE": "Produce an evidence-based comparative investment research report.",
+    "DEFAULT_MARKET_PERIOD": "1y",
+    "DEFAULT_MARKET_INTERVAL": "1d"
+  }
+}
