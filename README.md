@@ -19,6 +19,69 @@ The app exposes:
 
 ## Architecture
 
+### At-a-glance block diagram
+
+```mermaid
+flowchart LR
+    User["User or<br/>Timer Trigger"]
+
+    subgraph Functions["Azure Functions App - orchestration"]
+        Host["Functions Host"]
+        Worker["Python Worker"]
+        MAF["Microsoft Agent Framework<br/>Agent Run"]
+        Middleware["SandboxFunctionMiddleware"]
+
+        Host --> Worker
+        Worker --> MAF
+        MAF --> Middleware
+    end
+
+    subgraph Model["Governed model access"]
+        APIM["APIM AI Gateway"]
+        LLM["Azure OpenAI<br/>gpt-5.6-luna"]
+
+        APIM <--> LLM
+    end
+
+    subgraph Execution["Isolated execution - one sandbox per invocation"]
+        Sandbox["ACA Sandbox<br/>Tools and generated Python"]
+    end
+
+    Sources["Allow-listed data sources<br/>Market data, SEC, PyPI"]
+    Outlook["Outlook Connector MCP"]
+    Result["HTML report and<br/>run metrics"]
+
+    User --> Host
+    MAF <--> APIM
+    Middleware <--> Sandbox
+    Sandbox <--> Sources
+    Sandbox --> Outlook
+    MAF --> Result
+    Outlook --> Result
+    Result --> User
+    Worker -. "Delete after run" .-> Sandbox
+
+    classDef trigger fill:#e8f3ff,stroke:#1877c9,color:#10253f;
+    classDef orchestration fill:#eaf7ee,stroke:#268447,color:#102d1b;
+    classDef gateway fill:#fff4dc,stroke:#c47a00,color:#422b00;
+    classDef isolated fill:#f3eaff,stroke:#7446a8,color:#29163e;
+    classDef external fill:#f4f5f7,stroke:#687078,color:#202428;
+    classDef outcome fill:#e8f8f8,stroke:#168787,color:#123535;
+
+    class User trigger;
+    class Host,Worker,MAF,Middleware orchestration;
+    class APIM,LLM gateway;
+    class Sandbox isolated;
+    class Sources,Outlook external;
+    class Result outcome;
+```
+
+The green Functions area owns orchestration and the agent loop. The purple sandbox owns all tool
+and generated-code execution. A single sandbox is reused for the invocation and deleted after the
+report and email result are produced.
+
+### Detailed request sequence
+
 ```mermaid
 sequenceDiagram
     autonumber
