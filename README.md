@@ -19,6 +19,58 @@ The app exposes:
 
 ## Architecture
 
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as User / Scheduler
+    participant Host as Azure Functions Host
+    participant Worker as Python Functions Worker
+    participant Sandbox as ACA Sandbox
+    participant MAF as Microsoft Agent Framework
+    participant APIM as APIM AI Gateway
+    participant LLM as Azure OpenAI Model
+    participant Data as Approved Data Sources
+    participant Outlook as Outlook Connector MCP
+
+    User->>Host: POST /stock-analysis or timer fires
+    Host->>Worker: Invoke Function with validated trigger data
+    Worker->>Worker: Validate request and create run ID
+    Worker->>Sandbox: Create one invocation-scoped sandbox
+    Worker->>Sandbox: Upload sandbox tool runner
+    Worker->>MAF: agent.run(analysis prompt)
+
+    loop Each reasoning turn
+        MAF->>APIM: Chat completion + run correlation ID
+        APIM->>LLM: Governed model request
+        LLM-->>APIM: Assistant response or tool calls
+        APIM-->>MAF: Model response
+
+        opt Model requests one or more tools
+            MAF->>Worker: Invoke declared tool schema
+            Worker->>Worker: SandboxFunctionMiddleware intercepts call
+            Worker->>Sandbox: Execute tool with arguments
+            Sandbox->>Data: Allow-listed market, SEC, or PyPI request
+            Data-->>Sandbox: Data or package response
+            Sandbox-->>Worker: Structured tool result
+            Worker-->>MAF: Return result to the agent turn
+        end
+    end
+
+    MAF-->>Worker: Final HTML research report
+    Worker->>Sandbox: Execute send_outlook_email
+    Sandbox->>Outlook: Send through allow-listed MCP operation
+    Outlook-->>Sandbox: Delivery result
+    Sandbox-->>Worker: email_sent status
+    Worker->>Sandbox: Delete invocation sandbox
+    Worker-->>Host: AnalysisResult + run metrics
+    Host-->>User: HTTP response or timer completion log
+```
+
+**Execution boundary:** MAF and the LLM orchestration run in the Python worker, but declared tool
+bodies never execute there. `SandboxFunctionMiddleware` intercepts each tool request and sends it
+to the single ACA Sandbox owned by that Function invocation. The sandbox is reused for the full
+agent run and deleted during cleanup.
+
 1. The Function App calls `gpt-5.6-luna` through the configured APIM AI Gateway.
 2. MAF exposes market-history, SEC-facts, portfolio-metrics, and generated-Python schemas.
 3. `SandboxFunctionMiddleware` never calls the Python tool body.
